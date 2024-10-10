@@ -23,7 +23,7 @@ jobs:
       # Step 3: 使用 Chocolatey 安装依赖（Python, vcredist-all, make）
       - name: Install Dependencies via Chocolatey
         run: |
-          choco install python vcredist140 make -y
+          choco install python make -y
 
       # Step 4: 安装项目依赖
       - name: Install Project Dependencies

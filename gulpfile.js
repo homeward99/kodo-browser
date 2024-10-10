@@ -241,8 +241,7 @@ gulp.task("win-arm64", done => {
     let options = Object.assign({}, packagerOptions);
     options.platform = "win32";
     options.arch = "arm64";
-    options.icon = `${ICONS}/icon.png`;
-
+    options.icon = `${BRAND}/qiniu.png`;
     packager(options).then((paths) => {
       console.log("--done");
       done();
