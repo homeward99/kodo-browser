@@ -33,14 +33,13 @@ jobs:
       # Step 5: 构建应用
       - name: Build Application
         run: make build
-
-      # Step 6: 打包 Windows ARM64 应用
-      - name: Package Windows ARM64
-        run: make win-arm64
+      
+      - name: Build
+        run: ./node_modules/.bin/gulp win-arm64
 
       # Step 7: 上传构建产物（可选）
       - name: Upload Windows ARM64 Build
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v2
         with:
           name: win-arm64-build
           path: dist/win-arm64/  # 确保路径正确

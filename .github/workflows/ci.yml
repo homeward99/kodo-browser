@@ -1,4 +1,4 @@
-# on: [push, pull_request]
+on: [push, pull_request]
 name: Test Build
 jobs:
   build-on-linux:
@@ -22,7 +22,14 @@ jobs:
           sudo apt purge -yqq libmono* mono* php* libgdiplus libpcre2-posix3
           sudo apt install -y wine32 wine64
       - name: test
-        run: make i test
+        run: make i
       - name: build
-        run: make win-arm64
-
+        run: make build
+      - name: Build
+        run: ./node_modules/.bin/gulp win-arm64
+      # Step 7: 上传构建产物（可选）
+      - name: Upload Windows ARM64 Build
+        uses: actions/upload-artifact@v2
+        with:
+          name: win-arm64-build
+          path: dist/win-arm64/  # 确保路径正确
