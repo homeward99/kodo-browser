@@ -236,17 +236,35 @@ gulp.task("linux32zip", done => {
 
 gulp.task("win-arm64", done => {
   console.log(`--package ${NAME}-win-arm64`);
+  
+  // 确定目标目录
+  const targetDir = path.resolve(TARGET, `./${NAME}-win-arm64`);
 
-  plugins.run(`rm -rf ${TARGET}/${NAME}-win-arm64`).exec(() => {
+  // 删除目标目录（如果存在）
+  plugins.run(`rm -rf ${targetDir}`).exec(() => {
     let options = Object.assign({}, packagerOptions);
     options.platform = "win32";
     options.arch = "arm64";
     options.icon = `${BRAND}/qiniu.png`;
+
+    // 使用 electron-packager 进行打包
     packager(options).then((paths) => {
+      // 打印打包生成的路径
+      console.log("打包完成，生成的文件路径如下:");
+      paths.forEach((path) => {
+        console.log(path);
+      });
+
+      // 如果需要复制额外的文件，和 win64 任务一致
+      fs.copyFileSync(
+        path.resolve(ROOT, `./${WIN_NO_SANDBOX_NAME}`),
+        path.resolve(targetDir, `./${WIN_NO_SANDBOX_NAME}`)
+      );
+      
       console.log("--done");
       done();
     }, (errs) => {
-      console.error(errs);
+      console.error("打包时出错:", errs);
     });
   });
 });
