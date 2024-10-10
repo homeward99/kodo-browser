@@ -235,10 +235,10 @@ gulp.task("linux32zip", done => {
 });
 
 gulp.task("win-arm64", done => {
-  console.log(`--package ${NAME}-win-arm64`);
+  console.log(`--package win-arm64`);
   
   // 确定目标目录
-  const targetDir = path.resolve(TARGET, `./${NAME}-win-arm64`);
+  const targetDir = path.resolve(TARGET, `./win-arm64`);
 
   // 删除目标目录（如果存在）
   plugins.run(`rm -rf ${targetDir}`).exec(() => {
