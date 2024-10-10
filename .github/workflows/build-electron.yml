@@ -1,19 +1,11 @@
 name: Build Electron App
 
-# Trigger the workflow when code is pushed to the main branch or a pull request is created
-on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
-  workflow_dispatch:  # This allows manual triggering from the GitHub Actions UI
+on: [push, pull_request,workflow_dispatch]
 
 jobs:
   build:
     # Use an Ubuntu machine for the build job. You can change this to macOS or Windows if needed.
-    runs-on: ubuntu-20.04
+    runs-on: windows-latest
 
     # Set environment variables for the build process
     env:
@@ -30,34 +22,34 @@ jobs:
         with:
           node-version: '16'  # Update this if your project requires a different Node.js version
 
-      # Step 3: Install project dependencies using Yarn
-      - name: Install Dependencies
-        run: yarn install
+      # Step 3: 安装 Chocolatey 和必要的依赖（Python, vcredist, make）
+      - name: Install Chocolatey and dependencies
+        run: |
+          Set-ExecutionPolicy Bypass -Scope Process -Force; `
+          [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; `
+          iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+          choco install python vcredist-all make -y
 
-      # Step 4: Run 'make i' to install any project-specific dependencies
-      - name: Run Make Install
-        run: make i
+      # Step 4: 安装项目依赖
+      - name: Install Project Dependencies
+        run: |
+          make i
 
-      # Step 5: Run 'make build' to build the project
-      - name: Run Make Build
+      # Step 5: 开发模式下运行（可选，根据你的需求）
+      # - name: Run Development Mode
+      #   run: make run
+
+      # Step 6: 构建应用
+      - name: Build Application
         run: make build
 
-      # Step 6: Run gulp to build the Electron app for Windows ARM64
-      - name: Build for Windows ARM64
-        run: ./node_modules/.bin/gulp win-arm64
+      # Step 7: 打包 Windows ARM64 应用
+      - name: Package Windows ARM64
+        run: make win-arm64
 
-      # Step 7: Upload the built Electron app as an artifact
-      # Replace 'dist/win-arm64/' with the correct path if your output folder differs
+      # Step 8: 上传构建产物（可选）
       - name: Upload Windows ARM64 Build
         uses: actions/upload-artifact@v3
         with:
           name: win-arm64-build
-          path: dist/win-arm64/
-
-      # Optional: You can add more steps to upload builds for other platforms
-      # Example for macOS or other build artifacts
-      # - name: Upload MacOS Build
-      #   uses: actions/upload-artifact@v3
-      #   with:
-      #     name: macos-build
-      #     path: dist/mac/
+          path: dist/win-arm64/  # 确保打包的路径正确
