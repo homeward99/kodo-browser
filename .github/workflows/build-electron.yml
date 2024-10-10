@@ -41,3 +41,13 @@ jobs:
         with:
           name: win-arm64-build
           path: 'build/Kodo Browser-win-arm64/' # 确保路径正确
+      - name: Upload Release Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.create_release.outputs.upload_url }}
+          asset_path: ./build/kodo-browser-win32-x64-${{ steps.vars.outputs.tag }}.zip
+          asset_name: kodo-browser-win32-x64-${{ steps.vars.outputs.tag }}.zip
+          asset_content_type: application/zip
+
