@@ -23,7 +23,7 @@ jobs:
       # Step 3: 使用 Chocolatey 安装依赖（Python, vcredist-all, make）
       - name: Install Dependencies via Chocolatey
         run: |
-          choco install python310 make -y
+          choco install python310 make zip -y
       # Step 4: 安装项目依赖
       - name: Install Project Dependencies
         run: |
@@ -33,8 +33,14 @@ jobs:
         run: make build
       
       - name: Build
-        uses: softprops/action-gh-release@v1
         run: ./node_modules/.bin/gulp win-arm64
+
+      - name: Package build directory
+        run: |
+          zip -r build.zip build/
+
+      - name: release
+        uses: softprops/action-gh-release@v1
         with:
           draft: true
           files: |
