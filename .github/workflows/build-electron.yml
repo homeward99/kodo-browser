@@ -37,7 +37,7 @@ jobs:
 
       - name: Package build directory
         run: |
-          zip -r build.zip build/
+          zip -r ./build.zip build/
 
       - name: release
         uses: softprops/action-gh-release@v1
