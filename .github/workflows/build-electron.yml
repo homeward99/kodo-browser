@@ -45,7 +45,7 @@ jobs:
           draft: true
           files: |
             ./releases/*
-            ./build.zip  #这段代码位置正确
+            ./build.zip
         env:
           GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
 
