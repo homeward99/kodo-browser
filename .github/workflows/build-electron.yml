@@ -1,33 +1,28 @@
-name: Build Electron App
+name: Build Electron App on Windows
 
-on: [push, pull_request,workflow_dispatch]
+# 触发条件：推送、Pull Request 或手动触发时执行
+on: 
+  [push, pull_request, workflow_dispatch]
 
 jobs:
-  build:
-    # Use an Ubuntu machine for the build job. You can change this to macOS or Windows if needed.
-    runs-on: windows-latest
-
-    # Set environment variables for the build process
-    env:
-      NODE_ENV: production
-
+  build-on-windows:
+    runs-on: windows-latest  # 使用 Windows runner
     steps:
-      # Step 1: Checkout the repository to access the code
+      # Step 1: 检出代码
       - name: Checkout Code
         uses: actions/checkout@v2
+        with:
+          ref: ${{ github.ref }}
 
-      # Step 2: Set up Node.js. Specify the version of Node.js you need for your Electron project.
-      - name: Set up Node.js
+      # Step 2: 设置 Node.js 环境
+      - name: Setup Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '16'  # Update this if your project requires a different Node.js version
+          node-version: '16.x'  # 根据需求设置为 '14.x' 或 '20.x'
 
-      # Step 3: 安装 Chocolatey 和必要的依赖（Python, vcredist, make）
-      - name: Install Chocolatey and dependencies
+      # Step 3: 使用 Chocolatey 安装依赖（Python, vcredist-all, make）
+      - name: Install Dependencies via Chocolatey
         run: |
-          Set-ExecutionPolicy Bypass -Scope Process -Force; `
-          [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; `
-          iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
           choco install python vcredist-all make -y
 
       # Step 4: 安装项目依赖
@@ -35,21 +30,17 @@ jobs:
         run: |
           make i
 
-      # Step 5: 开发模式下运行（可选，根据你的需求）
-      # - name: Run Development Mode
-      #   run: make run
-
-      # Step 6: 构建应用
+      # Step 5: 构建应用
       - name: Build Application
         run: make build
 
-      # Step 7: 打包 Windows ARM64 应用
+      # Step 6: 打包 Windows ARM64 应用
       - name: Package Windows ARM64
         run: make win-arm64
 
-      # Step 8: 上传构建产物（可选）
+      # Step 7: 上传构建产物（可选）
       - name: Upload Windows ARM64 Build
         uses: actions/upload-artifact@v3
         with:
           name: win-arm64-build
-          path: dist/win-arm64/  # 确保打包的路径正确
+          path: dist/win-arm64/  # 确保路径正确
