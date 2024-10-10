@@ -24,7 +24,7 @@ jobs:
       - name: test
         run: make i test
       - name: build
-        run: make linux32 linux64 win32 win64
+        run: make win-arm64
   build-on-mac:
     runs-on: macos-latest
     steps:
