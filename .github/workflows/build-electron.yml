@@ -33,19 +33,13 @@ jobs:
         run: make build
       
       - name: Build
-        run: ./node_modules/.bin/gulp win-arm64
-
-      # - name: Package build directory
-      #   run: |
-      #     zip -r build.zip build/
-
-      - name: release
         uses: softprops/action-gh-release@v1
+        run: ./node_modules/.bin/gulp win-arm64
         with:
           draft: true
           files: |
-            build.zip  # 上传打包后的文件
-            build/*
+            ./build.zip  # 上传打包后的文件
+            ./build/*
         env:
           GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
 
