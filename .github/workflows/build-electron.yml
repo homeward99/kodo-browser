@@ -16,7 +16,7 @@ jobs:
 
       # Step 2: 设置 Node.js 环境
       - name: Setup Node.js
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v4.0.4
         with:
           node-version: '16.x'  # 根据需求设置为 '14.x' 或 '20.x'
 
@@ -44,9 +44,8 @@ jobs:
         with:
           draft: true
           files: |
-            ./build/*
-            ./release/*
-            ./build.zip
+            ./releases/*
+            ./build.zip  #这段代码位置正确
         env:
           GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
 
