@@ -1,0 +1,62 @@
+name: Build Electron App
+
+# Trigger the workflow when code is pushed to the main branch or a pull request is created
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    # Use an Ubuntu machine for the build job. You can change this to macOS or Windows if needed.
+    runs-on: ubuntu-latest
+
+    # Set environment variables for the build process
+    env:
+      NODE_ENV: production
+
+    steps:
+      # Step 1: Checkout the repository to access the code
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      # Step 2: Set up Node.js. Specify the version of Node.js you need for your Electron project.
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'  # Update this if your project requires a different Node.js version
+
+      # Step 3: Install project dependencies using Yarn
+      - name: Install Dependencies
+        run: yarn install
+
+      # Step 4: Run 'make i' to install any project-specific dependencies
+      - name: Run Make Install
+        run: make i
+
+      # Step 5: Run 'make build' to build the project
+      - name: Run Make Build
+        run: make build
+
+      # Step 6: Run gulp to build the Electron app for Windows ARM64
+      - name: Build for Windows ARM64
+        run: ./node_modules/.bin/gulp win-arm64
+
+      # Step 7: Upload the built Electron app as an artifact
+      # Replace 'dist/win-arm64/' with the correct path if your output folder differs
+      - name: Upload Windows ARM64 Build
+        uses: actions/upload-artifact@v3
+        with:
+          name: win-arm64-build
+          path: dist/win-arm64/
+
+      # Optional: You can add more steps to upload builds for other platforms
+      # Example for macOS or other build artifacts
+      # - name: Upload MacOS Build
+      #   uses: actions/upload-artifact@v3
+      #   with:
+      #     name: macos-build
+      #     path: dist/mac/
