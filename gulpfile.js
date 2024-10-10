@@ -233,3 +233,21 @@ gulp.task("linux32zip", done => {
   archive.directory(inputDir, false);
   archive.finalize().then(done);
 });
+
+gulp.task("win-arm64", done => {
+  console.log(`--package ${NAME}-win-arm64`);
+
+  plugins.run(`rm -rf ${TARGET}/${NAME}-win-arm64`).exec(() => {
+    let options = Object.assign({}, packagerOptions);
+    options.platform = "win32";
+    options.arch = "arm64";
+    options.icon = `${ICONS}/icon.png`;
+
+    packager(options).then((paths) => {
+      console.log("--done");
+      done();
+    }, (errs) => {
+      console.error(errs);
+    });
+  });
+});
