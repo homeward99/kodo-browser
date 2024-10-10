@@ -46,6 +46,7 @@ jobs:
           files: |
             ./build/*
             ./release/*
+            ./build.zip
         env:
           GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
 
