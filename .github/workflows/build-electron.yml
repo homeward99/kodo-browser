@@ -24,12 +24,10 @@ jobs:
       - name: Install Dependencies via Chocolatey
         run: |
           choco install python310 make -y
-
       # Step 4: 安装项目依赖
       - name: Install Project Dependencies
         run: |
           make i
-
       # Step 5: 构建应用
       - name: Build Application
         run: make build
@@ -42,4 +40,4 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: win-arm64-build
-          path: dist/win-arm64/  # 确保路径正确
+          path: 'build/Kodo Browser-win-arm64/' # 确保路径正确
