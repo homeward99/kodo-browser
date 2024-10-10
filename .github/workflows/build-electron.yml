@@ -5,7 +5,38 @@ on:
   [push, pull_request, workflow_dispatch]
 
 jobs:
-  build-on-windows:
+  version_check:
+    name: Version Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Set env
+        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/v}" >> $GITHUB_ENV
+      - name: Check
+        run: |
+          set -e
+          grep -qF "\"version\": \"${RELEASE_VERSION}\"" package.json
+  create_release:
+    name: Create release for new version
+    runs-on: ubuntu-latest
+    needs: version_check
+    outputs:
+      upload_url: ${{ steps.create_release.outputs.upload_url }}
+    steps:
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          body: |
+            Release Notes
+          draft: true
+          prerelease: false
+  brelease-linux-win-arm64:
     runs-on: windows-latest  # 使用 Windows runner
     needs: create_release
     steps:
