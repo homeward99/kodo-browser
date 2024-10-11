@@ -254,13 +254,7 @@ gulp.task("win-arm64", done => {
       paths.forEach((path) => {
         console.log(path);
       });
-
-      // 如果需要复制额外的文件，和 win64 任务一致
-      // fs.copyFileSync(
-      //   path.resolve(ROOT, `./${WIN_NO_SANDBOX_NAME}`),
-      //   path.resolve(targetDir, `./${WIN_NO_SANDBOX_NAME}`)
-      // );
-      
+     
       console.log("--done");
       done();
     }, (errs) => {

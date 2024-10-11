@@ -2,7 +2,7 @@ name: Build Electron App on Windows
 
 # 触发条件：推送、Pull Request 或手动触发时执行
 on: 
-  [push, pull_request, workflow_dispatch]
+  [workflow_dispatch]
 
 jobs:
   build-on-windows:
@@ -37,15 +37,14 @@ jobs:
 
       - name: Package build directory
         run: |
-          zip -r ./build.zip ./build/
+          zip -r ./windows-arm64.zip ./build/
 
       - name: release
         uses: softprops/action-gh-release@v1
         with:
           draft: true
           files: |
-            ./releases/*
-            ./build.zip
+            ./windows-arm64.zip
         env:
           GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
 
